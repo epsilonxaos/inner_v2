@@ -11,10 +11,12 @@ const mix = require('laravel-mix');
  |
  */
 
+ mix.copyDirectory('resources/plugins/Datatables', 'public/plugins/Datatables');
+
  mix.js('resources/js/panel/scripts/index.js', 'public/panel/js/main.js').version();
  mix.copy('resources/vendor/nucleo', 'public/panel/vendor/nucleo')
- .copy('node_modules/@fortawesome/fontawesome-free', 'public/panel/vendor/@fortawesome/fontawesome-free')
- .copy('node_modules/trumbowyg/dist/ui/icons.svg', 'public/panel/vendor/trumbowyg/dist/ui/icons.svg');
+    .copy('node_modules/@fortawesome/fontawesome-free', 'public/panel/vendor/@fortawesome/fontawesome-free')
+    .copy('node_modules/trumbowyg/dist/ui/icons.svg', 'public/panel/vendor/trumbowyg/dist/ui/icons.svg');
  
  mix.styles([
      'resources/vendor/panel.css'

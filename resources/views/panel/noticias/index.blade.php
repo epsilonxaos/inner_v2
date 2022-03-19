@@ -9,6 +9,10 @@
             background-repeat: no-repeat;
             background-size: cover;
         }
+
+        tbody {
+            min-height: 300px;
+        }
     </style>
 @endpush
 
@@ -36,9 +40,10 @@
 					</div>
                     <!-- Light table -->
 					<div class="table-responsive pb-3">
-						<table class="table align-items-center table-flush" id="dataTable">
+						<table class="table align-items-center table-flush" id="dataTableInit" style="width:100%;">
 							<thead class="thead-light">
 								<tr>
+									<th scope="col" class="sort" data-sort="#">#</th>
 									<th scope="col" class="sort" data-sort="portada" width="200px">Portada</th>
                                     <th scope="col" class="sort" data-sort="titulo">Titulo</th>
                                     <th scope="col" class="sort" data-sort="categoria">Categoria</th>
@@ -47,7 +52,8 @@
 									<th scope="col" class="no-sort text-center" width="150px">Acciones</th>
 								</tr>
 							</thead>
-							<tbody class="list">
+                            <tbody style=""></tbody>
+							{{-- <tbody class="list">
 								@if ((isset($lista)) && (count($lista) > 0))
                                     @foreach ($lista as $num => $row)
                                         <tr>
@@ -55,10 +61,10 @@
                                                 <div class="bg" style="background-image: url({{asset($row -> portada)}});"></div>
                                             </td>
                                             <td class="font-weight-bold">
-                                                {{ $row -> titulo }}
+                                                {{ $row -> name }}
                                             </td>
                                             <td>
-                                                {{ $row -> categoriaTitulo }}
+                                                {{ $row -> email }}
                                             </td>
                                             <td class="text-center">
                                                 {{ \App\Helpers::dateSpanishComplete($row -> created_at) }}
@@ -91,7 +97,7 @@
                                         </tr>
                                     @endforeach
                                 @endif
-							</tbody>
+							</tbody> --}}
 						</table>
 					</div>
 				</div>
@@ -100,25 +106,46 @@
     </div>
 @endsection
 
-@push('js')
+@push('configDataTable')
     <script type="text/javascript">
-        alertify.set('notifier','position', 'top-right');
 
-        function cambiar_status(el, id, status){
-            axios.post(PATH + 'admin/noticias/change/status', {
-                id: id,
-                status: status
-            })
-            .then(function (response) {
-                console.log(response);
-                document.querySelector('label.'+el).removeAttribute('onclick');
-                let n = status == 1 ? 0 : 1;
-                document.querySelector('label.'+el).setAttribute('onclick', 'cambiar_status(\''+el+'\', '+id+', '+n+')');
-                alertify.notify('Hecho!', 'success', 2);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        
+
+        @can(PermissionKey::Noticias['permissions']['status']['name'])
+            STATUS_PER = true;
+        @endcan
+
+        @canany([PermissionKey::Noticias['permissions']['edit']['name'], PermissionKey::Noticias['permissions']['destroy']['name']])
+            ACTIONS = true;
+        @endcanany
+
+        @can(PermissionKey::Noticias['permissions']['edit']['name'])
+            EDIT_PER = true;
+        @endcan
+
+        @can(PermissionKey::Noticias['permissions']['destroy']['name'])
+            DELETE_PER = true;
+        @endcan
+
+        const dataTableOptions = {
+            'urlAjax': "{{ route('panel.noticias.getData') }}",
+            'urlEdit': '{{ route("panel.noticias.edit", ":id") }}',
+            'urlDelete': '{{ route("panel.noticias.destroy", ":id") }}',
+            'columns': [
+                { data: 'id' },
+                {  
+                    data: 'portada',
+                    orderable: false,
+                    render: function(cover){
+                        return `<div class="bg" style="background-image: url(${PATH+cover});"></div>`;
+                    }
+                },
+                { data: 'titulo' },
+                { data: 'categoriaTitulo' },
+                { data: 'created_at' },
+                { data: null }, //Este pertenece al espacio para el status
+                { data: null } //Este pertenece a las acciones
+            ]
         }
     </script>
 @endpush

@@ -68939,17 +68939,17 @@ __webpack_require__(/*! ./dist/tagsinput.css */ "./resources/js/panel/scripts/ta
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-window.cambiar_status = function (el, id, status) {
-  var url = document.querySelector('label.' + el).dataset.url;
+window.cambiarStatusGeneral = function (el, id, status, url) {
+  // let url = document.querySelector('label.'+el).dataset.url;
   axios.post(url, {
     id: id,
     status: status
   }).then(function (response) {
-    console.log(response);
     document.querySelector('label.' + el).removeAttribute('onclick');
-    var n = status === 'visible' ? 'hide' : 'visible';
+    console.log('label.' + el);
+    var n = status === 1 ? 0 : 1;
     console.log(n);
-    document.querySelector('label.' + el).setAttribute('onclick', 'cambiar_status(\'' + el + '\', ' + id + ', \'' + n + '\')');
+    document.querySelector('label.' + el).setAttribute('onclick', "cambiarStatusGeneral('".concat(el, "+', ").concat(id, ", ").concat(n, ", '").concat(url, "')"));
     alertify.notify('Hecho!', 'success', 2);
   })["catch"](function (error) {
     console.log(error);
@@ -69003,7 +69003,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! D:\Proyectos D\Falcon\kappra2\resources\js\panel\scripts\index.js */"./resources/js/panel/scripts/index.js");
+module.exports = __webpack_require__(/*! D:\Proyectos D\Locker\temp\innerStudioNewApp\resources\js\panel\scripts\index.js */"./resources/js/panel/scripts/index.js");
 
 
 /***/ })

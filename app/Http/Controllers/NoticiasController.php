@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Categorias;
+use App\DataTableHelper;
 use App\Helpers;
 use App\Noticias;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 class NoticiasController extends Controller
 {
@@ -18,9 +21,11 @@ class NoticiasController extends Controller
      */
     public function index()
     {
-        $data = Noticias::select('noticias.*', 'categorias.title as categoriaTitulo')
-            -> join('categorias', 'noticias.categorias_id', '=', 'categorias.id')
-            -> get();
+        // $data = Noticias::select('noticias.*', 'categorias.title as categoriaTitulo')
+        //     -> join('categorias', 'noticias.categorias_id', '=', 'categorias.id')
+        //     -> get();
+
+        // $data = User::all();
 
         return view('panel.noticias.index', [
             'title' => 'Noticias',
@@ -31,8 +36,28 @@ class NoticiasController extends Controller
                     'active' => true
                 ]
             ],
-            'lista' => $data
+            // 'lista' => $data
         ]);
+    }
+
+    public function getData(Request $request)
+    {
+        $options = [
+            'table' => 'noticias',
+            'filterLike' => 'noticias.titulo',
+            'join'
+        ];
+
+        $response = DataTableHelper::dataTableGenerate($request, $options);
+
+        $data = $response['records'];
+        $data = $data -> select('noticias.*', 'categorias.title as categoriaTitulo')
+            -> join('categorias', 'noticias.categorias_id', '=', 'categorias.id')
+            -> get();
+
+        $response["aaData"] = $data -> toArray();
+        echo json_encode($response);
+        exit;
     }
 
     /**
@@ -162,7 +187,7 @@ class NoticiasController extends Controller
         Helpers::deleteFileStorage('noticias', 'portada', $id);
         Noticias::where('id', $id) -> delete();
 
-        return redirect() -> back() -> with('success', 'Registro eliminado correctamente!');
+        return response()->json('true', 200);
     }
 
     /**

@@ -96,11 +96,12 @@ Route::prefix('/admin')->group(function(){
     //Noticias
     Route::prefix('/noticias') -> middleware('auth:admin') -> group(function(){
         Route::get('/', 'NoticiasController@index') -> name('panel.noticias.index');
+        Route::get('/get/data', 'NoticiasController@getData') -> name('panel.noticias.getData');
         Route::get('/create', 'NoticiasController@create') -> name('panel.noticias.create');
         Route::put('/create/store', 'NoticiasController@store') -> name('panel.noticias.store');
         Route::get('/edit/{id}', 'NoticiasController@edit') -> name('panel.noticias.edit');
         Route::post('/edit/{id}/update', 'NoticiasController@update') -> name('panel.noticias.update');
-        Route::delete('/destroy/{id}', 'NoticiasController@destroy') -> name('panel.noticias.destroy');
+        Route::get('/destroy/{id}', 'NoticiasController@destroy') -> name('panel.noticias.destroy');
         Route::post('/change/status', 'NoticiasController@changeStatus') -> name('panel.noticias.status');
     });
 

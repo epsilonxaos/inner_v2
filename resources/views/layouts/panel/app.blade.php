@@ -12,6 +12,7 @@
     <!-- Fonts -->
     {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"> --}}
     <!-- Icons -->
+    <link rel="stylesheet" href="{{asset('plugins/Datatables/datatables.min.css')}}">
     <link rel="stylesheet" href="{{asset('panel/vendor/nucleo/css/nucleo.css')}}" type="text/css">
     <link rel="stylesheet" href="{{asset('panel/vendor/@fortawesome/fontawesome-free/css/all.min.css')}}" type="text/css">
 
@@ -21,6 +22,7 @@
     <!-- Argon CSS -->
     <link rel="stylesheet" href="{{asset('panel/css/custom.css?v=1.2.0')}}" type="text/css">
     <link rel="stylesheet" href="{{asset('panel/css/main.css?v=1.2.0')}}" type="text/css">
+
     <style>
         .breadcrumb {
             padding: 6px 15px
@@ -158,12 +160,18 @@
     </div>
     <script>
         const PATH = '{{asset('/')}}';
+        var ACTIONS = false;
+        var STATUS_PER = false;
+        var EDIT_PER = false;
+        var DELETE_PER = false;
     </script>
+    @stack('configDataTable')
     <script src="{{mix('panel/js/main.js')}}"></script>
     <script src="{{asset('panel/dropify/js/dropify.min.js')}}"></script>
     <script src="{{asset('panel/dropify/js/dropify-multiple.min.js')}}"></script>
     <script src="{{asset('panel/alertify/alertify.min.js')}}"></script>
     <script src="{{asset('panel/sweetalert/sweetalert.min.js')}}"></script>
+    <script src="{{asset('plugins/Datatables/datatables.min.js')}}"></script>
     @stack('js')
     <script>
 
@@ -193,6 +201,130 @@
                 }
             });
         }
+
+        var tableD;
+
+        $(window).on('load', function() {
+            $(document).on( 'preInit.dt', function (e, settings) {
+                $('#dataTableInit').parents('.col-sm-12').css('min-height', '300px')
+            } );
+            
+            // DataTable
+            tableD = $('#dataTableInit')
+                .on( 'init.dt', function () {
+                    
+                } )
+                .DataTable({
+                "order": [
+                    [ 0, 'desc' ]
+                ],
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                "pagingType": "numbers",
+                "language": {
+                    "decimal":        "",
+                    "emptyTable":     "No hay datos disponibles en la tabla",
+                    "info":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    "infoEmpty":      "Mostrando 0 a 0 de 0 registros",
+                    "infoFiltered":   "(filtrado de _MAX_ registros totales)",
+                    "infoPostFix":    "",
+                    "thousands":      ",",
+                    "lengthMenu":     "Mostrar _MENU_ registros",
+                    "loadingRecords": "Cargando...",
+                    "processing":     "Procesando informacion...",
+                    "search":         "Buscar:",
+                    "zeroRecords":    "No se encontraron resultados",
+                    "paginate": {
+                        "first":      "Primero",
+                        "last":       "Ultimo",
+                        "next":       "Siguiente",
+                        "previous":   "Anterior"
+                    },
+                    "aria": {
+                        "sortAscending":  ": activar para ordenar columna ascendente",
+                        "sortDescending": ": activar para ordenar la columna descendente"
+                    }
+                }, 
+                ajax: dataTableOptions.urlAjax,
+                columns: dataTableOptions.columns,
+                "columnDefs": [
+                    {
+                        "targets": -2,
+                        "orderable": false,
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            let btn = `<div class="wp">
+                                            <input class="tgl tgl-light chkbx-toggle" type="checkbox" disabled/>
+                                            <label class="tgl-btn toggle_${row}" for="toggle_${row}"></label>
+                                        </div>`;
+
+                            if(STATUS_PER) {
+                                btn = `<div class="wp">
+                                            <input class="tgl tgl-light chkbx-toggle" id="toggle_${rowData.id}" type="checkbox" value="${rowData.id}" ${(rowData.status == 1) ? 'checked="checked"' : ''}"/>
+                                            <label class="tgl-btn toggle_${rowData.id}" for="toggle_${rowData.id}" onclick="cambiarStatusGeneral('toggle_${rowData.id}', ${rowData.id}, ${(rowData.status == 1) ? 0 : 1}, '{{route("panel.noticias.status")}}')"></label>
+                                        </div>`;
+                            }
+
+                            $(td).html(btn);
+                        }
+                    },
+                    {
+                        "targets": -1,
+                        "orderable": false,
+                        "createdCell": function(td, cellData, rowData, row, col) {
+                            let actions = '';
+
+                            if (EDIT_PER) {
+                                var url = dataTableOptions.urlEdit;
+                                    url = url.replace(':id', rowData.id);
+
+                                actions += `<a href="${url}" class="btn btn-info btn-sm"><i class="fas fa-edit mr-2"></i> Editar</a>`;
+                            }
+
+                            if (DELETE_PER) {
+                                var url = dataTableOptions.urlDelete;
+                                    url = url.replace(':id', rowData.id);
+
+                                actions += `<button type="button" data-url="${url}" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>`;
+                            }
+
+                            $(td).html(actions);
+                        }
+                    }
+                ]
+            });
+
+            $('#dataTableInit tbody').on( 'click', '.btn-danger', function () {
+                console.log($(this).parents('tr'))
+                let row = $(this).parents('tr');
+                let url = $(this).data('url');
+
+                swal({
+                        title: "¿Finalizar eliminación?",
+                        icon: "warning",
+                        buttons: ["Cancelar", "Eliminar"],
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            alertify.alert('Espere un momento porfavor...').set({'frameless': true, 'closable': false, 'movable': false});
+                            
+                            axios.get(url)
+                            .then(function (response) {
+                                if(response.data) {
+                                    tableD
+                                        .row( row )
+                                        .remove()
+                                        .draw();
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });  
+                        }
+                    });
+            } );
+        });
     </script>
 </body>
 
