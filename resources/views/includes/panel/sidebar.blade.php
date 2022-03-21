@@ -34,36 +34,12 @@
 						</ul>
 					</div>
 				</li>
-                <li class="nav-item">
-					<a class="nav-link {{request() -> is('admin/portafolio*') ? 'active' : ''}}" href="#navbar-portafolio" data-toggle="collapse" role="button" aria-expanded="{{request() -> is('admin/portafolio*') ? 'true' : 'false'}}" aria-controls="navbar-tables">
-						<i class="ni ni-briefcase-24 text-default"></i>
-						<span class="nav-link-text">Portafolio</span>
+				<li class="nav-item">
+					<a class="nav-link {{request() -> is('admin/customer*') ? 'active' : '' }}" href="{{ route('panel.customer.index') }}">
+						<i class="ni ni-single-02 text-default"></i>
+						<span class="nav-link-text">Clientes</span>
 					</a>
-					<div class="collapse {{request() -> is('admin/portafolio*') ? 'show' : ''}}" id="navbar-portafolio">
-						<ul class="nav nav-sm flex-column">
-							<li class="nav-item">
-								<a class="nav-link {{request() -> is('admin/categorias/portafolio*') ? 'active' : ''}}" href="{{route('panel.categorias.index', ['seccion' => 'portafolio'])}}">
-									<i class="ni ni-tag text-default"></i>
-									<span class="nav-link-text">Categorías</span>
-								</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link {{request() -> is('admin/portafolio*') ? 'active' : ''}}" href="{{route('panel.portafolio.index')}}">
-									<i class="ni ni-bullet-list-67 text-default"></i>
-									<span class="nav-link-text">Portafolio</span>
-								</a>
-							</li>
-						</ul>
-					</div>
 				</li>
-				{{-- @can(PermissionKey::Noticias['permissions']['index']['name'])
-					<li class="nav-item">
-						<a class="nav-link {{request() -> is('admin/noticias*') ? 'active' : ''}}" href="{{route('panel.noticias.index')}}">
-							<i class="ni ni-bullet-list-67 text-default"></i>
-							<span class="nav-link-text">Noticias</span>
-						</a>
-					</li>
-				@endcan --}}
 				@can(PermissionKey::Admin['permissions']['index']['name'])
 					<li class="nav-item">
 						<a class="nav-link {{request() -> is('admin/cuentas/usuarios*') ? 'active' : '' }}" href="{{ route('panel.admins.index') }}">

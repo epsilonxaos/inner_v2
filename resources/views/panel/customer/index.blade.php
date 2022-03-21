@@ -2,12 +2,8 @@
 
 @push('link')
     <style>
-        .bg {
-            width: 170px;
-            height: 100px;
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-size: cover;
+        tbody {
+            min-height: 300px;
         }
     </style>
 @endpush
@@ -25,23 +21,23 @@
 					<div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col-12 col-sm-6">
-                                <h3 class="mb-0 mr-4">Listado de categorias</h3>
+                                <h3 class="mb-0 mr-4">Listado de clientes</h3>
                             </div>
                             <div class="col-12 col-sm-6 text-center text-sm-right">
-                                <a href="{{route('panel.categorias.create', ['seccion' => request('seccion')])}}" class="btn btn-success pt-2 pb-2"><i class="fas fa-plus mr-2"></i> Agregar</a>
-                                {{-- @can(PermissionKey::Noticias['permissions']['create']['name'])
-                                @endcan --}}
+                                @can(PermissionKey::Noticias['permissions']['create']['name'])
+                                    <a href="{{route('panel.noticias.create')}}" class="btn btn-success pt-2 pb-2"><i class="fas fa-plus mr-2"></i> Agregar</a>
+                                @endcan
                             </div>
                         </div>
 					</div>
                     <!-- Light table -->
-                    <div class="table-responsive pb-3">
+					<div class="table-responsive pb-3">
 						<table class="table align-items-center table-flush" id="dataTableInit" style="width:100%;">
 							<thead class="thead-light">
 								<tr>
-									<th scope="col" class="sort" data-sort="titulo">Titulo</th>
-									<th scope="col" class="sort text-center" data-sort="fecha">Fecha publicación</th>
-									<th scope="col" class="no-sort text-center" width="200px">Visualizar</th>
+                                    <th scope="col" class="sort" data-sort="titulo">Nombre</th>
+                                    <th scope="col" class="sort" data-sort="categoria">Correo</th>
+									<th scope="col" class="sort text-center" data-sort="fecha">Telefono</th>
 									<th scope="col" class="no-sort text-center" width="150px">Acciones</th>
 								</tr>
 							</thead>
@@ -57,12 +53,12 @@
 @push('configDataTable')
     <script type="text/javascript">
         const dataTableOptions = {
-            'urlAjax': "{{ $urlGetData }}", //Controller
+            'urlAjax': "{{ route('panel.customer.getData') }}",
             'columns': [
-                { data: 'title', name: 'title' },
-                { data: 'created_at', name: 'created_at' },
-                { data: 'visualizar' },
-                { data: 'acciones' }
+                { data: 'completeName', name: 'completeName' },
+                { data: 'email', name: 'customer.email' },
+                { data: 'phone', name: 'customer.phone' },
+                { data: 'acciones', name: 'acciones', orderable: false, searchable: false }
             ]
         }
     </script>

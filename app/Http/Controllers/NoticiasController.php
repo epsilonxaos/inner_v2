@@ -9,6 +9,7 @@ use App\Noticias;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Yajra\DataTables\Facades\DataTables;
 
 class NoticiasController extends Controller
 {
@@ -21,12 +22,6 @@ class NoticiasController extends Controller
      */
     public function index()
     {
-        // $data = Noticias::select('noticias.*', 'categorias.title as categoriaTitulo')
-        //     -> join('categorias', 'noticias.categorias_id', '=', 'categorias.id')
-        //     -> get();
-
-        // $data = User::all();
-
         return view('panel.noticias.index', [
             'title' => 'Noticias',
             'breadcrumb' => [
@@ -35,29 +30,46 @@ class NoticiasController extends Controller
                     'route' => 'panel.noticias.index',
                     'active' => true
                 ]
-            ],
-            // 'lista' => $data
+            ]
         ]);
     }
 
-    public function getData(Request $request)
+    public function getData()
     {
-        $options = [
-            'table' => 'noticias',
-            'filterLike' => 'noticias.titulo',
-            'join'
-        ];
+        $dataGet = Noticias::join('categorias', 'noticias.categorias_id', '=', 'categorias.id')
+            -> select([
+                'noticias.id',
+                'noticias.portada',
+                'noticias.titulo',
+                'categorias.title',
+                'noticias.created_at',
+                'noticias.status',
+            ]);
 
-        $response = DataTableHelper::dataTableGenerate($request, $options);
+        return DataTables::of($dataGet)
+        -> editColumn('created_at', function($data){
+            return Helpers::dateSpanishShort($data -> created_at);
+        })
+        -> addColumn('visualizar', function($data) {
+            $accion = '<div class="wp"> <input class="tgl tgl-light chkbx-toggle" type="checkbox" disabled/> <label class="tgl-btn toggle_'.$data -> id.'" for="toggle_'.$data -> id.'"></label> </div>';
+            
+            $accion = '<div class="wp">
+                    <input class="tgl tgl-light chkbx-toggle" id="toggle_'.$data -> id.'" type="checkbox" value="'.$data -> id.'" '.($data -> status == 1 ? 'checked="checked"' : '').'"/>
+                    <label class="tgl-btn toggle_'.$data -> id.'" for="toggle_'.$data -> id.'" onclick="changeStatusGeneral(\'toggle_'.$data -> id.'\', '.$data -> id.', '.($data -> status == 1 ? 0 : 1).', \''.route('panel.portafolio.status') .'\')"></label>
+                </div>';
 
-        $data = $response['records'];
-        $data = $data -> select('noticias.*', 'categorias.title as categoriaTitulo')
-            -> join('categorias', 'noticias.categorias_id', '=', 'categorias.id')
-            -> get();
+            return $accion;
+        })
+        -> addColumn('acciones', function($data) {
+            $acciones = "";
+            
+            $acciones .= '<a href="'.route("panel.noticias.edit", ["id" => $data -> id]).'" class="btn btn-info btn-sm"><i class="fas fa-edit mr-2"></i> Editar</a>';
+            $acciones .= '<button type="button" data-url="'.route("panel.noticias.destroy", ["id" => $data -> id]).'" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>';
 
-        $response["aaData"] = $data -> toArray();
-        echo json_encode($response);
-        exit;
+            return $acciones;
+        })
+        ->rawColumns(['visualizar', 'acciones'])
+        -> make();
     }
 
     /**

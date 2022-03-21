@@ -15,6 +15,7 @@ class CreateCustomerTable extends Migration
     {
         Schema::create('customer', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('id_user');
             $table->string('name', 191) -> nullable();
             $table->string('lastname', 191) -> nullable();
             $table->string('phone', 45) -> nullable();
@@ -28,6 +29,11 @@ class CreateCustomerTable extends Migration
             $table->date('birthday') -> nullable();
             $table->tinyInteger('status') -> default(1);
             $table->timestamps();
+
+            $table->foreign('id_user')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
         });
     }
 

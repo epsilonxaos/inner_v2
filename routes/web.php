@@ -88,9 +88,22 @@ Route::prefix('/admin')->group(function(){
         Route::get('/{seccion}/create', 'CategoriasController@create') -> name('panel.categorias.create');
         Route::put('/{seccion}/create/store', 'CategoriasController@store') -> name('panel.categorias.store');
         Route::get('/{seccion}/edit/{id}', 'CategoriasController@edit') -> name('panel.categorias.edit');
-        Route::post('/{seccion}/edit/{id}/update', 'CategoriasController@update') -> name('panel.categorias.update');
         Route::delete('/destroy/{id}', 'CategoriasController@destroy') -> name('panel.categorias.destroy');
         Route::post('/change/status', 'CategoriasController@changeStatus') -> name('panel.categorias.status');
+        Route::post('/{seccion}/edit/{id}/update', 'CategoriasController@update') -> name('panel.categorias.update');
+        Route::get('/{seccion}/get/data', 'CategoriasController@getData') -> name('panel.categorias.getData');
+    });
+
+    //Customer
+    Route::prefix('/customer') -> middleware('auth:admin') -> group(function(){
+        Route::get('/', 'CustomerController@index') -> name('panel.customer.index');
+        Route::get('/create', 'CustomerController@create') -> name('panel.customer.create');
+        Route::put('/create/store', 'CustomerController@store') -> name('panel.customer.store');
+        Route::get('/edit/{id}', 'CustomerController@edit') -> name('panel.customer.edit');
+        Route::delete('/destroy/{id}', 'CustomerController@destroy') -> name('panel.customer.destroy');
+        Route::post('/change/status', 'CustomerController@changeStatus') -> name('panel.customer.status');
+        Route::post('/edit/{id}/update', 'CustomerController@update') -> name('panel.customer.update');
+        Route::get('/get/data', 'CustomerController@getData') -> name('panel.customer.getData');
     });
 
     //Noticias

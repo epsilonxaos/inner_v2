@@ -211,16 +211,12 @@
             
             // DataTable
             tableD = $('#dataTableInit')
-                .on( 'init.dt', function () {
-                    
-                } )
                 .DataTable({
                 "order": [
                     [ 0, 'desc' ]
                 ],
                 processing: true,
                 serverSide: true,
-                responsive: true,
                 "pagingType": "numbers",
                 "language": {
                     "decimal":        "",
@@ -247,51 +243,7 @@
                     }
                 }, 
                 ajax: dataTableOptions.urlAjax,
-                columns: dataTableOptions.columns,
-                "columnDefs": [
-                    {
-                        "targets": -2,
-                        "orderable": false,
-                        "createdCell": function (td, cellData, rowData, row, col) {
-                            let btn = `<div class="wp">
-                                            <input class="tgl tgl-light chkbx-toggle" type="checkbox" disabled/>
-                                            <label class="tgl-btn toggle_${row}" for="toggle_${row}"></label>
-                                        </div>`;
-
-                            if(STATUS_PER) {
-                                btn = `<div class="wp">
-                                            <input class="tgl tgl-light chkbx-toggle" id="toggle_${rowData.id}" type="checkbox" value="${rowData.id}" ${(rowData.status == 1) ? 'checked="checked"' : ''}"/>
-                                            <label class="tgl-btn toggle_${rowData.id}" for="toggle_${rowData.id}" onclick="cambiarStatusGeneral('toggle_${rowData.id}', ${rowData.id}, ${(rowData.status == 1) ? 0 : 1}, '{{route("panel.noticias.status")}}')"></label>
-                                        </div>`;
-                            }
-
-                            $(td).html(btn);
-                        }
-                    },
-                    {
-                        "targets": -1,
-                        "orderable": false,
-                        "createdCell": function(td, cellData, rowData, row, col) {
-                            let actions = '';
-
-                            if (EDIT_PER) {
-                                var url = dataTableOptions.urlEdit;
-                                    url = url.replace(':id', rowData.id);
-
-                                actions += `<a href="${url}" class="btn btn-info btn-sm"><i class="fas fa-edit mr-2"></i> Editar</a>`;
-                            }
-
-                            if (DELETE_PER) {
-                                var url = dataTableOptions.urlDelete;
-                                    url = url.replace(':id', rowData.id);
-
-                                actions += `<button type="button" data-url="${url}" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>`;
-                            }
-
-                            $(td).html(actions);
-                        }
-                    }
-                ]
+                columns: dataTableOptions.columns
             });
 
             $('#dataTableInit tbody').on( 'click', '.btn-danger', function () {
