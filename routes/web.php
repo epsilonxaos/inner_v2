@@ -88,7 +88,7 @@ Route::prefix('/admin')->group(function(){
         Route::get('/{seccion}/create', 'CategoriasController@create') -> name('panel.categorias.create');
         Route::put('/{seccion}/create/store', 'CategoriasController@store') -> name('panel.categorias.store');
         Route::get('/{seccion}/edit/{id}', 'CategoriasController@edit') -> name('panel.categorias.edit');
-        Route::delete('/destroy/{id}', 'CategoriasController@destroy') -> name('panel.categorias.destroy');
+        Route::get('/destroy/{id}', 'CategoriasController@destroy') -> name('panel.categorias.destroy');
         Route::post('/change/status', 'CategoriasController@changeStatus') -> name('panel.categorias.status');
         Route::post('/{seccion}/edit/{id}/update', 'CategoriasController@update') -> name('panel.categorias.update');
         Route::get('/{seccion}/get/data', 'CategoriasController@getData') -> name('panel.categorias.getData');

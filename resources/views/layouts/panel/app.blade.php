@@ -160,12 +160,10 @@
     </div>
     <script>
         const PATH = '{{asset('/')}}';
-        var ACTIONS = false;
-        var STATUS_PER = false;
-        var EDIT_PER = false;
-        var DELETE_PER = false;
     </script>
     @stack('configDataTable')
+    <script src="https://unpkg.com/popper.js@1"></script>
+    <script src="https://unpkg.com/tippy.js@5"></script>
     <script src="{{mix('panel/js/main.js')}}"></script>
     <script src="{{asset('panel/dropify/js/dropify.min.js')}}"></script>
     <script src="{{asset('panel/dropify/js/dropify-multiple.min.js')}}"></script>
@@ -211,6 +209,9 @@
             
             // DataTable
             tableD = $('#dataTableInit')
+                .on('init.dt', function(){
+                    tippy('[data-tippy-content]')
+                })
                 .DataTable({
                 "order": [
                     [ 0, 'desc' ]
@@ -264,6 +265,7 @@
                             axios.get(url)
                             .then(function (response) {
                                 if(response.data) {
+                                    alertify.closeAll();
                                     tableD
                                         .row( row )
                                         .remove()

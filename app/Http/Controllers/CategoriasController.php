@@ -43,9 +43,9 @@ class CategoriasController extends Controller
         -> addColumn('visualizar', function($data) {
             $accion = '<div class="wp"> <input class="tgl tgl-light chkbx-toggle" type="checkbox" disabled/> <label class="tgl-btn toggle_'.$data -> id.'" for="toggle_'.$data -> id.'"></label> </div>';
             
-            $accion = '<div class="wp">
+            $accion = '<div class="wp" data-tippy-content="Activar / Ocultar">
                     <input class="tgl tgl-light chkbx-toggle" id="toggle_'.$data -> id.'" type="checkbox" value="'.$data -> id.'" '.($data -> status == 1 ? 'checked="checked"' : '').'"/>
-                    <label class="tgl-btn toggle_'.$data -> id.'" for="toggle_'.$data -> id.'" onclick="changeStatusGeneral(\'toggle_'.$data -> id.'\', '.$data -> id.', '.($data -> status == 1 ? 0 : 1).', \''.route('panel.categorias.status') .'\')"></label>
+                    <label class="tgl-btn toggle_'.$data -> id.'" for="toggle_'.$data -> id.'" onclick="cambiarStatusGeneral(\'toggle_'.$data -> id.'\', '.$data -> id.', '.($data -> status == 1 ? 0 : 1).', \''.route('panel.categorias.status') .'\')"></label>
                 </div>';
 
             return $accion;
@@ -53,8 +53,8 @@ class CategoriasController extends Controller
         -> addColumn('acciones', function($data) use ($seccion) {
             $acciones = "";
             
-            $acciones .= '<a href="'.route("panel.categorias.edit", ["id" => $data -> id, "seccion" => $seccion]).'" class="btn btn-info btn-sm"><i class="fas fa-edit mr-2"></i> Editar</a>';
-            $acciones .= '<button type="button" data-url="'.route("panel.categorias.destroy", ["id" => $data -> id]).'" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>';
+            $acciones .= '<a data-tippy-content="Editar" href="'.route("panel.categorias.edit", ["id" => $data -> id, "seccion" => $seccion]).'" class="btn btn-info btn-sm"><i class="fas fa-edit fa-lg"></i></a>';
+            $acciones .= '<button data-tippy-content="Eliminar" type="button" data-url="'.route("panel.categorias.destroy", ["id" => $data -> id]).'" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt fa-lg"></i></button>';
 
             return $acciones;
         })
