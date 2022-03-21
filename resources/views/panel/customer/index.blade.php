@@ -25,7 +25,7 @@
                             </div>
                             <div class="col-12 col-sm-6 text-center text-sm-right">
                                 @can(PermissionKey::Noticias['permissions']['create']['name'])
-                                    <a href="{{route('panel.noticias.create')}}" class="btn btn-success pt-2 pb-2"><i class="fas fa-plus mr-2"></i> Agregar</a>
+                                    <a href="{{route('panel.customer.create')}}" class="btn btn-success pt-2 pb-2"><i class="fas fa-plus mr-2"></i> Agregar</a>
                                 @endcan
                             </div>
                         </div>

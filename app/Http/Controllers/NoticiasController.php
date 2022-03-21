@@ -44,7 +44,8 @@ class NoticiasController extends Controller
                 'categorias.title',
                 'noticias.created_at',
                 'noticias.status',
-            ]);
+            ])
+            -> orderBy('noticias.id','desc');
 
         return DataTables::of($dataGet)
         -> editColumn('created_at', function($data){

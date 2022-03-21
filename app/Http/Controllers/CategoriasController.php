@@ -34,7 +34,8 @@ class CategoriasController extends Controller
     public function getData(String $seccion)
     {
         $dataGet = Categorias::select(['id', 'title', 'created_at', 'status'])
-            -> where('seccion', $seccion);
+            -> where('seccion', $seccion)
+            -> orderBy('id','desc');
 
         return DataTables::of($dataGet)
         -> editColumn('created_at', function($data){

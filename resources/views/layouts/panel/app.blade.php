@@ -213,39 +213,36 @@
                     tippy('[data-tippy-content]')
                 })
                 .DataTable({
-                "order": [
-                    [ 0, 'desc' ]
-                ],
-                processing: true,
-                serverSide: true,
-                "pagingType": "numbers",
-                "language": {
-                    "decimal":        "",
-                    "emptyTable":     "No hay datos disponibles en la tabla",
-                    "info":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                    "infoEmpty":      "Mostrando 0 a 0 de 0 registros",
-                    "infoFiltered":   "(filtrado de _MAX_ registros totales)",
-                    "infoPostFix":    "",
-                    "thousands":      ",",
-                    "lengthMenu":     "Mostrar _MENU_ registros",
-                    "loadingRecords": "Cargando...",
-                    "processing":     "Procesando informacion...",
-                    "search":         "Buscar:",
-                    "zeroRecords":    "No se encontraron resultados",
-                    "paginate": {
-                        "first":      "Primero",
-                        "last":       "Ultimo",
-                        "next":       "Siguiente",
-                        "previous":   "Anterior"
-                    },
-                    "aria": {
-                        "sortAscending":  ": activar para ordenar columna ascendente",
-                        "sortDescending": ": activar para ordenar la columna descendente"
-                    }
-                }, 
-                ajax: dataTableOptions.urlAjax,
-                columns: dataTableOptions.columns
-            });
+                    processing: true,
+                    serverSide: true,
+                    "pagingType": "numbers",
+                    "language": {
+                        "decimal":        "",
+                        "emptyTable":     "No hay datos disponibles en la tabla",
+                        "info":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                        "infoEmpty":      "Mostrando 0 a 0 de 0 registros",
+                        "infoFiltered":   "(filtrado de _MAX_ registros totales)",
+                        "infoPostFix":    "",
+                        "thousands":      ",",
+                        "lengthMenu":     "Mostrar _MENU_ registros",
+                        "loadingRecords": "Cargando...",
+                        "processing":     "Procesando informacion...",
+                        "search":         "Buscar:",
+                        "zeroRecords":    "No se encontraron resultados",
+                        "paginate": {
+                            "first":      "Primero",
+                            "last":       "Ultimo",
+                            "next":       "Siguiente",
+                            "previous":   "Anterior"
+                        },
+                        "aria": {
+                            "sortAscending":  ": activar para ordenar columna ascendente",
+                            "sortDescending": ": activar para ordenar la columna descendente"
+                        }
+                    }, 
+                    ajax: dataTableOptions.urlAjax,
+                    columns: dataTableOptions.columns
+                });
 
             $('#dataTableInit tbody').on( 'click', '.btn-danger', function () {
                 console.log($(this).parents('tr'))
