@@ -200,82 +200,84 @@
             });
         }
 
-        var tableD;
-
-        $(window).on('load', function() {
-            $(document).on( 'preInit.dt', function (e, settings) {
-                $('#dataTableInit').parents('.col-sm-12').css('min-height', '300px')
-            } );
-            
-            // DataTable
-            tableD = $('#dataTableInit')
-                .on('init.dt', function(){
-                    tippy('[data-tippy-content]')
-                })
-                .DataTable({
-                    processing: true,
-                    serverSide: true,
-                    "pagingType": "numbers",
-                    "language": {
-                        "decimal":        "",
-                        "emptyTable":     "No hay datos disponibles en la tabla",
-                        "info":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                        "infoEmpty":      "Mostrando 0 a 0 de 0 registros",
-                        "infoFiltered":   "(filtrado de _MAX_ registros totales)",
-                        "infoPostFix":    "",
-                        "thousands":      ",",
-                        "lengthMenu":     "Mostrar _MENU_ registros",
-                        "loadingRecords": "Cargando...",
-                        "processing":     "Procesando informacion...",
-                        "search":         "Buscar:",
-                        "zeroRecords":    "No se encontraron resultados",
-                        "paginate": {
-                            "first":      "Primero",
-                            "last":       "Ultimo",
-                            "next":       "Siguiente",
-                            "previous":   "Anterior"
-                        },
-                        "aria": {
-                            "sortAscending":  ": activar para ordenar columna ascendente",
-                            "sortDescending": ": activar para ordenar la columna descendente"
-                        }
-                    }, 
-                    ajax: dataTableOptions.urlAjax,
-                    columns: dataTableOptions.columns
-                });
-
-            $('#dataTableInit tbody').on( 'click', '.btn-danger', function () {
-                console.log($(this).parents('tr'))
-                let row = $(this).parents('tr');
-                let url = $(this).data('url');
-
-                swal({
-                        title: "¿Finalizar eliminación?",
-                        icon: "warning",
-                        buttons: ["Cancelar", "Eliminar"],
-                        dangerMode: true,
+        if(document.getElementById('dataTableInit')) {
+            var tableD;
+    
+            $(window).on('load', function() {
+                $(document).on( 'preInit.dt', function (e, settings) {
+                    $('#dataTableInit').parents('.col-sm-12').css('min-height', '300px')
+                } );
+                
+                // DataTable
+                tableD = $('#dataTableInit')
+                    .on('init.dt', function(){
+                        tippy('[data-tippy-content]')
                     })
-                    .then((willDelete) => {
-                        if (willDelete) {
-                            alertify.alert('Espere un momento porfavor...').set({'frameless': true, 'closable': false, 'movable': false});
-                            
-                            axios.get(url)
-                            .then(function (response) {
-                                if(response.data) {
-                                    alertify.closeAll();
-                                    tableD
-                                        .row( row )
-                                        .remove()
-                                        .draw();
-                                }
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            });  
-                        }
+                    .DataTable({
+                        processing: true,
+                        serverSide: true,
+                        "pagingType": "numbers",
+                        "language": {
+                            "decimal":        "",
+                            "emptyTable":     "No hay datos disponibles en la tabla",
+                            "info":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                            "infoEmpty":      "Mostrando 0 a 0 de 0 registros",
+                            "infoFiltered":   "(filtrado de _MAX_ registros totales)",
+                            "infoPostFix":    "",
+                            "thousands":      ",",
+                            "lengthMenu":     "Mostrar _MENU_ registros",
+                            "loadingRecords": "Cargando...",
+                            "processing":     "Procesando informacion...",
+                            "search":         "Buscar:",
+                            "zeroRecords":    "No se encontraron resultados",
+                            "paginate": {
+                                "first":      "Primero",
+                                "last":       "Ultimo",
+                                "next":       "Siguiente",
+                                "previous":   "Anterior"
+                            },
+                            "aria": {
+                                "sortAscending":  ": activar para ordenar columna ascendente",
+                                "sortDescending": ": activar para ordenar la columna descendente"
+                            }
+                        }, 
+                        ajax: dataTableOptions.urlAjax,
+                        columns: dataTableOptions.columns
                     });
-            } );
-        });
+    
+                $('#dataTableInit tbody').on( 'click', '.btn-danger', function () {
+                    console.log($(this).parents('tr'))
+                    let row = $(this).parents('tr');
+                    let url = $(this).data('url');
+    
+                    swal({
+                            title: "¿Finalizar eliminación?",
+                            icon: "warning",
+                            buttons: ["Cancelar", "Eliminar"],
+                            dangerMode: true,
+                        })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                alertify.alert('Espere un momento porfavor...').set({'frameless': true, 'closable': false, 'movable': false});
+                                
+                                axios.get(url)
+                                .then(function (response) {
+                                    if(response.data) {
+                                        alertify.closeAll();
+                                        tableD
+                                            .row( row )
+                                            .remove()
+                                            .draw();
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.log(error);
+                                });  
+                            }
+                        });
+                } );
+            });
+        }
     </script>
 </body>
 

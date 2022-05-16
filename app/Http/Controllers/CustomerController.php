@@ -61,7 +61,7 @@ class CustomerController extends Controller
     public function create()
     {
         return view("panel.customer.create", [
-            "title" => "Cliente",
+            "title" => "Clientes",
             "breadcrumb" => [
                 [
                     'title' => 'Listado clientes',
@@ -110,5 +110,36 @@ class CustomerController extends Controller
         ]);
 
         return redirect() -> back() -> with('success', 'Registro creado correctamente');
+    }
+
+    public function edit(Int $id)
+    {
+        return view("panel.customer.edit", [
+            "title" => "Clientes",
+            "breadcrumb" => [
+                [
+                    'title' => 'Listado clientes',
+                    'route' => 'panel.customer.index',
+                    'active' => false
+                ],
+                [
+                    'title' => 'Editar cliente',
+                    'route' => 'panel.customer.edit',
+                    'active' => true,
+                    'params' => [
+                        'id' => $id
+                    ]
+                ]
+            ],
+            'data' => User::join('customer', 'customer.id_user', '=', 'users.id')
+                -> select('users.id AS userId', 'customer.*')
+                -> where('users.id', $id)
+                -> first()
+        ]);
+    }
+
+    public function update(Int $id, Request $request)
+    {
+        
     }
 }
