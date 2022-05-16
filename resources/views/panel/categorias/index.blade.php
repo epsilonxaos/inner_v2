@@ -35,63 +35,17 @@
                         </div>
 					</div>
                     <!-- Light table -->
-					<div class="table-responsive pb-3">
-						<table class="table align-items-center table-flush" id="dataTable">
+                    <div class="table-responsive pb-3">
+						<table class="table align-items-center table-flush" id="dataTableInit" style="width:100%;">
 							<thead class="thead-light">
 								<tr>
-                                    @if (request('seccion') === 'indefinido')
-									    <th scope="col" class="sort" data-sort="portada" width="200px">Portada</th>
-                                    @endif
-                                    <th scope="col" class="sort" data-sort="titulo">Titulo</th>
+									<th scope="col" class="sort" data-sort="titulo">Titulo</th>
 									<th scope="col" class="sort text-center" data-sort="fecha">Fecha publicación</th>
 									<th scope="col" class="no-sort text-center" width="200px">Visualizar</th>
 									<th scope="col" class="no-sort text-center" width="150px">Acciones</th>
 								</tr>
 							</thead>
-							<tbody class="list">
-								@if ((isset($lista)) && (count($lista) > 0))
-                                    @foreach ($lista as $num => $row)
-                                        <tr>
-                                            @if (request('seccion') === 'indefinido')
-                                                <td>
-                                                    <div class="bg" style="background-image: url({{asset($row -> portada)}});"></div>
-                                                </td>
-                                            @endif
-                                            <td class="font-weight-bold">
-                                                {{ $row -> title }}
-                                            </td>
-                                            <td class="text-center">
-                                                {{ \App\Helpers::dateSpanishComplete($row -> created_at) }}
-                                            </td>
-                                            <td>
-                                                <div class="wp">
-                                                    <input class="tgl tgl-light chkbx-toggle" id="toggle_{{$num}}" type="checkbox" value="{{$row -> id}}" {{($row -> status == 1) ? 'checked="checked"' : ''}}"/>
-                                                    <label class="tgl-btn toggle_{{$num}}" data-url="{{route('panel.categorias.status')}}" for="toggle_{{$num}}" onclick="cambiar_status('toggle_{{$num}}', {{$row -> id}}, {{($row -> status == 1) ? 0 : 1}})"></label>
-                                                </div>
-                                                {{-- @can(PermissionKey::Noticias['permissions']['status']['name'])
-                                                @elsecan(PermissionKey::Noticias['permissions']['index']['name'])
-                                                    <div class="wp">
-                                                        <input class="tgl tgl-light chkbx-toggle" type="checkbox" disabled/>
-                                                        <label class="tgl-btn toggle_{{$num}}" for="toggle_{{$num}}"></label>
-                                                    </div>
-                                                @endcan --}}
-                                            </td>
-                                            <td class="text-center">
-                                                <a href="{{route('panel.categorias.edit', ['seccion' => request('seccion'), 'id' => $row -> id])}}" class="btn btn-info btn-sm"><i class="fas fa-edit mr-2"></i> Editar</a>
-                                                {{-- @can(PermissionKey::Noticias['permissions']['edit']['name'])
-                                                @endcan --}}
-                                                <form action="{{route('panel.categorias.destroy', ["id" => $row -> id])}}" method="post" class="d-inline delete-form-{{$row -> id}}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button" onclick="deleteSubmitForm({{$row -> id}})" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
-                                                </form>
-                                                {{-- @can(PermissionKey::Noticias['permissions']['destroy']['name'])
-                                                @endcan --}}
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-							</tbody>
+                            <tbody class="list"></tbody>
 						</table>
 					</div>
 				</div>
@@ -99,3 +53,17 @@
         </div>
     </div>
 @endsection
+
+@push('configDataTable')
+    <script type="text/javascript">
+        const dataTableOptions = {
+            'urlAjax': "{{ $urlGetData }}", //Controller
+            'columns': [
+                { data: 'title', name: 'title' },
+                { data: 'created_at', name: 'created_at' },
+                { data: 'visualizar' },
+                { data: 'acciones' }
+            ]
+        }
+    </script>
+@endpush

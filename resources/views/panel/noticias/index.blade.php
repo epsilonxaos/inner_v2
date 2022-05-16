@@ -9,6 +9,10 @@
             background-repeat: no-repeat;
             background-size: cover;
         }
+
+        tbody {
+            min-height: 300px;
+        }
     </style>
 @endpush
 
@@ -36,7 +40,7 @@
 					</div>
                     <!-- Light table -->
 					<div class="table-responsive pb-3">
-						<table class="table align-items-center table-flush" id="dataTable">
+						<table class="table align-items-center table-flush" id="dataTableInit" style="width:100%;">
 							<thead class="thead-light">
 								<tr>
 									<th scope="col" class="sort" data-sort="portada" width="200px">Portada</th>
@@ -47,51 +51,7 @@
 									<th scope="col" class="no-sort text-center" width="150px">Acciones</th>
 								</tr>
 							</thead>
-							<tbody class="list">
-								@if ((isset($lista)) && (count($lista) > 0))
-                                    @foreach ($lista as $num => $row)
-                                        <tr>
-                                            <td>
-                                                <div class="bg" style="background-image: url({{asset($row -> portada)}});"></div>
-                                            </td>
-                                            <td class="font-weight-bold">
-                                                {{ $row -> titulo }}
-                                            </td>
-                                            <td>
-                                                {{ $row -> categoriaTitulo }}
-                                            </td>
-                                            <td class="text-center">
-                                                {{ \App\Helpers::dateSpanishComplete($row -> created_at) }}
-                                            </td>
-                                            <td>
-                                                @can(PermissionKey::Noticias['permissions']['status']['name'])
-                                                    <div class="wp">
-                                                        <input class="tgl tgl-light chkbx-toggle" id="toggle_{{$num}}" type="checkbox" value="{{$row -> id}}" {{($row -> status == 1) ? 'checked="checked"' : ''}}"/>
-                                                        <label class="tgl-btn toggle_{{$num}}" for="toggle_{{$num}}" onclick="cambiar_status('toggle_{{$num}}', {{$row -> id}}, {{($row -> status == 1) ? 0 : 1}})"></label>
-                                                    </div>
-                                                @elsecan(PermissionKey::Noticias['permissions']['index']['name'])
-                                                    <div class="wp">
-                                                        <input class="tgl tgl-light chkbx-toggle" type="checkbox" disabled/>
-                                                        <label class="tgl-btn toggle_{{$num}}" for="toggle_{{$num}}"></label>
-                                                    </div>
-                                                @endcan
-                                            </td>
-                                            <td class="text-center">
-                                                @can(PermissionKey::Noticias['permissions']['edit']['name'])
-                                                    <a href="{{route('panel.noticias.edit', ['id' => $row -> id])}}" class="btn btn-info btn-sm"><i class="fas fa-edit mr-2"></i> Editar</a>
-                                                @endcan
-                                                @can(PermissionKey::Noticias['permissions']['destroy']['name'])
-                                                    <form action="{{route('panel.noticias.destroy', ["id" => $row -> id])}}" method="post" class="d-inline delete-form-{{$row -> id}}">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="button" onclick="deleteSubmitForm({{$row -> id}})" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
-                                                    </form>
-                                                @endcan
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-							</tbody>
+                            <tbody class="list"></tbody>
 						</table>
 					</div>
 				</div>
@@ -100,25 +60,25 @@
     </div>
 @endsection
 
-@push('js')
+@push('configDataTable')
     <script type="text/javascript">
-        alertify.set('notifier','position', 'top-right');
-
-        function cambiar_status(el, id, status){
-            axios.post(PATH + 'admin/noticias/change/status', {
-                id: id,
-                status: status
-            })
-            .then(function (response) {
-                console.log(response);
-                document.querySelector('label.'+el).removeAttribute('onclick');
-                let n = status == 1 ? 0 : 1;
-                document.querySelector('label.'+el).setAttribute('onclick', 'cambiar_status(\''+el+'\', '+id+', '+n+')');
-                alertify.notify('Hecho!', 'success', 2);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        const dataTableOptions = {
+            'urlAjax': "{{ route('panel.noticias.getData') }}",
+            'columns': [
+                {  
+                    data: 'portada',
+                    name: 'noticias.portada',
+                    orderable: false,
+                    render: function(cover){
+                        return `<div class="bg" style="background-image: url(${PATH+cover});"></div>`;
+                    }
+                },
+                { data: 'titulo', name: 'noticias.titulo' },
+                { data: 'title', name: 'categorias.title'  },
+                { data: 'created_at', name: 'noticias.created_at' },
+                { data: 'visualizar', name: 'visualizar' },
+                { data: 'acciones', name: 'acciones' },
+            ]
         }
     </script>
 @endpush

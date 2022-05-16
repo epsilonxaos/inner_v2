@@ -88,19 +88,33 @@ Route::prefix('/admin')->group(function(){
         Route::get('/{seccion}/create', 'CategoriasController@create') -> name('panel.categorias.create');
         Route::put('/{seccion}/create/store', 'CategoriasController@store') -> name('panel.categorias.store');
         Route::get('/{seccion}/edit/{id}', 'CategoriasController@edit') -> name('panel.categorias.edit');
-        Route::post('/{seccion}/edit/{id}/update', 'CategoriasController@update') -> name('panel.categorias.update');
-        Route::delete('/destroy/{id}', 'CategoriasController@destroy') -> name('panel.categorias.destroy');
+        Route::get('/destroy/{id}', 'CategoriasController@destroy') -> name('panel.categorias.destroy');
         Route::post('/change/status', 'CategoriasController@changeStatus') -> name('panel.categorias.status');
+        Route::post('/{seccion}/edit/{id}/update', 'CategoriasController@update') -> name('panel.categorias.update');
+        Route::get('/{seccion}/get/data', 'CategoriasController@getData') -> name('panel.categorias.getData');
+    });
+
+    //Customer
+    Route::prefix('/customer') -> middleware('auth:admin') -> group(function(){
+        Route::get('/', 'CustomerController@index') -> name('panel.customer.index');
+        Route::get('/create', 'CustomerController@create') -> name('panel.customer.create');
+        Route::put('/create/store', 'CustomerController@store') -> name('panel.customer.store');
+        Route::get('/edit/{id}', 'CustomerController@edit') -> name('panel.customer.edit');
+        Route::delete('/destroy/{id}', 'CustomerController@destroy') -> name('panel.customer.destroy');
+        Route::post('/change/status', 'CustomerController@changeStatus') -> name('panel.customer.status');
+        Route::post('/edit/{id}/update', 'CustomerController@update') -> name('panel.customer.update');
+        Route::get('/get/data', 'CustomerController@getData') -> name('panel.customer.getData');
     });
 
     //Noticias
     Route::prefix('/noticias') -> middleware('auth:admin') -> group(function(){
         Route::get('/', 'NoticiasController@index') -> name('panel.noticias.index');
+        Route::get('/get/data', 'NoticiasController@getData') -> name('panel.noticias.getData');
         Route::get('/create', 'NoticiasController@create') -> name('panel.noticias.create');
         Route::put('/create/store', 'NoticiasController@store') -> name('panel.noticias.store');
         Route::get('/edit/{id}', 'NoticiasController@edit') -> name('panel.noticias.edit');
         Route::post('/edit/{id}/update', 'NoticiasController@update') -> name('panel.noticias.update');
-        Route::delete('/destroy/{id}', 'NoticiasController@destroy') -> name('panel.noticias.destroy');
+        Route::get('/destroy/{id}', 'NoticiasController@destroy') -> name('panel.noticias.destroy');
         Route::post('/change/status', 'NoticiasController@changeStatus') -> name('panel.noticias.status');
     });
 

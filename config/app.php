@@ -168,6 +168,7 @@ return [
 
         Spatie\Permission\PermissionServiceProvider::class,
         App\Providers\PermissionKey::class,
+        Yajra\Datatables\DatatablesServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -229,6 +230,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'PermissionKey' => App\Providers\PermissionKey::class,
+        'DataTables' => YajraDataTablesFacadesDataTables::class,
     ],
 
 ];

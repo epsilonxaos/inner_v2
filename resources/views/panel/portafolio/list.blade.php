@@ -66,7 +66,7 @@
                                             <td>
                                                 <div class="wp">
                                                     <input class="tgl tgl-light chkbx-toggle" id="toggle_{{$num}}" type="checkbox" value="{{$row -> id}}" {{($row -> status == 1) ? 'checked="checked"' : ''}}"/>
-                                                    <label class="tgl-btn toggle_{{$num}}" for="toggle_{{$num}}" onclick="changeStatusGeneral('toggle_{{$num}}', {{$row -> id}}, {{($row -> status == 1) ? 0 : 1}}, '{{route('panel.portafolio.status')}}')"></label>
+                                                    <label class="tgl-btn toggle_{{$num}}" for="toggle_{{$num}}" onclick="cambiarStatusGeneral('toggle_{{$num}}', {{$row -> id}}, {{($row -> status == 1) ? 0 : 1}}, '{{route('panel.portafolio.status')}}')"></label>
                                                 </div>
                                                 {{-- @can(PermissionKey::Portafolio['permissions']['status']['name'])
                                                 @elsecan(PermissionKey::Portafolio['permissions']['index']['name'])

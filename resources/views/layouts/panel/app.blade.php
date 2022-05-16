@@ -12,6 +12,7 @@
     <!-- Fonts -->
     {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"> --}}
     <!-- Icons -->
+    <link rel="stylesheet" href="{{asset('plugins/Datatables/datatables.min.css')}}">
     <link rel="stylesheet" href="{{asset('panel/vendor/nucleo/css/nucleo.css')}}" type="text/css">
     <link rel="stylesheet" href="{{asset('panel/vendor/@fortawesome/fontawesome-free/css/all.min.css')}}" type="text/css">
 
@@ -21,6 +22,7 @@
     <!-- Argon CSS -->
     <link rel="stylesheet" href="{{asset('panel/css/custom.css?v=1.2.0')}}" type="text/css">
     <link rel="stylesheet" href="{{asset('panel/css/main.css?v=1.2.0')}}" type="text/css">
+
     <style>
         .breadcrumb {
             padding: 6px 15px
@@ -159,11 +161,15 @@
     <script>
         const PATH = '{{asset('/')}}';
     </script>
+    @stack('configDataTable')
+    <script src="https://unpkg.com/popper.js@1"></script>
+    <script src="https://unpkg.com/tippy.js@5"></script>
     <script src="{{mix('panel/js/main.js')}}"></script>
     <script src="{{asset('panel/dropify/js/dropify.min.js')}}"></script>
     <script src="{{asset('panel/dropify/js/dropify-multiple.min.js')}}"></script>
     <script src="{{asset('panel/alertify/alertify.min.js')}}"></script>
     <script src="{{asset('panel/sweetalert/sweetalert.min.js')}}"></script>
+    <script src="{{asset('plugins/Datatables/datatables.min.js')}}"></script>
     @stack('js')
     <script>
 
@@ -191,6 +197,85 @@
                     alertify.alert('Espere un momento porfavor...').set({'frameless': true, 'closable': false, 'movable': false});
                     document.querySelector('.delete-form-'+id).submit();
                 }
+            });
+        }
+
+        if(document.getElementById('dataTableInit')) {
+            var tableD;
+    
+            $(window).on('load', function() {
+                $(document).on( 'preInit.dt', function (e, settings) {
+                    $('#dataTableInit').parents('.col-sm-12').css('min-height', '300px')
+                } );
+                
+                // DataTable
+                tableD = $('#dataTableInit')
+                    .on('init.dt', function(){
+                        tippy('[data-tippy-content]')
+                    })
+                    .DataTable({
+                        processing: true,
+                        serverSide: true,
+                        "pagingType": "numbers",
+                        "language": {
+                            "decimal":        "",
+                            "emptyTable":     "No hay datos disponibles en la tabla",
+                            "info":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                            "infoEmpty":      "Mostrando 0 a 0 de 0 registros",
+                            "infoFiltered":   "(filtrado de _MAX_ registros totales)",
+                            "infoPostFix":    "",
+                            "thousands":      ",",
+                            "lengthMenu":     "Mostrar _MENU_ registros",
+                            "loadingRecords": "Cargando...",
+                            "processing":     "Procesando informacion...",
+                            "search":         "Buscar:",
+                            "zeroRecords":    "No se encontraron resultados",
+                            "paginate": {
+                                "first":      "Primero",
+                                "last":       "Ultimo",
+                                "next":       "Siguiente",
+                                "previous":   "Anterior"
+                            },
+                            "aria": {
+                                "sortAscending":  ": activar para ordenar columna ascendente",
+                                "sortDescending": ": activar para ordenar la columna descendente"
+                            }
+                        }, 
+                        ajax: dataTableOptions.urlAjax,
+                        columns: dataTableOptions.columns
+                    });
+    
+                $('#dataTableInit tbody').on( 'click', '.btn-danger', function () {
+                    console.log($(this).parents('tr'))
+                    let row = $(this).parents('tr');
+                    let url = $(this).data('url');
+    
+                    swal({
+                            title: "¿Finalizar eliminación?",
+                            icon: "warning",
+                            buttons: ["Cancelar", "Eliminar"],
+                            dangerMode: true,
+                        })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                alertify.alert('Espere un momento porfavor...').set({'frameless': true, 'closable': false, 'movable': false});
+                                
+                                axios.get(url)
+                                .then(function (response) {
+                                    if(response.data) {
+                                        alertify.closeAll();
+                                        tableD
+                                            .row( row )
+                                            .remove()
+                                            .draw();
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.log(error);
+                                });  
+                            }
+                        });
+                } );
             });
         }
     </script>
